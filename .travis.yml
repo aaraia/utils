@@ -5,7 +5,7 @@ matrix:
       compiler: clang
       script: 
         - brew update          
-        - cmake ./src -G Xcode
+        - cmake . -G Xcode
         - xcodebuild
         
     - os: osx
@@ -13,7 +13,7 @@ matrix:
       compiler: clang
       script: 
         - brew update          
-        - cmake ./src -G Xcode
+        - cmake . -G Xcode
         - xcodebuild
         
     - os: osx
@@ -21,7 +21,7 @@ matrix:
       compiler: clang
       script: 
         - brew update          
-        - cmake ./src -G Xcode
+        - cmake . -G Xcode
         - xcodebuild
         
     - os: osx
@@ -29,7 +29,7 @@ matrix:
       compiler: clang
       script: 
         - brew update          
-        - cmake ./src -G Xcode
+        - cmake . -G Xcode
         - xcodebuild
         
     - os: osx
@@ -37,7 +37,7 @@ matrix:
       compiler: clang
       script: 
         - brew update          
-        - cmake ./src -G Xcode
+        - cmake . -G Xcode
         - xcodebuild
 
     # works on Precise and Trusty
@@ -53,7 +53,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
       script:
-        - cmake ./src 
+        - cmake . 
         - make      
 
     # works on Precise and Trusty
@@ -69,7 +69,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
       script:
-        - cmake ./src 
+        - cmake . 
         - make      
 
     # works on Precise and Trusty
@@ -85,7 +85,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
       script:
-        - cmake ./src 
+        - cmake . 
         - make      
   
     # works on Precise and Trusty
@@ -101,7 +101,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6"
       script:
-        - cmake ./src 
+        - cmake . 
         - make
 
     # works on Precise and Trusty
@@ -117,7 +117,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-3.7 && CXX=clang++-3.7"
       script:
-        - cmake ./src 
+        - cmake .
         - make
 
     # works on Precise and Trusty
@@ -133,7 +133,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8"
       script:
-        - cmake ./src 
+        - cmake . 
         - make
 
 
@@ -149,7 +149,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
       script:
-        - cmake ./src 
+        - cmake . 
         - make
 
     # works on Trusty
@@ -164,7 +164,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
       script:
-        - cmake ./src 
+        - cmake . 
         - make
 
     # works on Trusty
@@ -179,7 +179,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
       script:
-        - cmake ./src 
+        - cmake . 
         - make
 
 before_install:
