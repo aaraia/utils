@@ -43,9 +43,21 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
   include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
-set (LIB_SRCS lib/include/stack.h lib/src/stack.cpp lib/include/list.h lib/src/list.cpp lib/include/queue.h lib/src/queue.cpp lib/include/bst.h lib/src/bst.cpp)
-#set (PROJECT_SRCS "")
-#set (TEST_SRCS "")
+set (LIB_SRCS 
+	lib/include/stack.h 
+	lib/src/stack.cpp 
+	lib/include/list.h 
+	lib/src/list.cpp 
+	lib/include/queue.h 
+	lib/src/queue.cpp 
+	lib/include/bst.h 
+	lib/src/bst.cpp)
+	
+#set (PROJECT_SRCS )
+
+set (TEST_SRCS 
+	test/include/testOne.h 
+	test/src/testOne.cpp)
 
 # add library
 add_library (lib ${LIB_SRCS})
@@ -55,7 +67,7 @@ add_executable (utils proj/src/main.cpp)
 target_link_libraries (utils lib)
 
 # add test project
-add_executable (UnitTests "")
+add_executable (UnitTests ${TEST_SRCS})
 target_link_libraries (UnitTests lib)
 target_link_libraries (UnitTests gtest_main)
 
