@@ -51,7 +51,7 @@ matrix:
             - gcc-5
             - g++-5
       env:
-        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5 && CXXFLAGS=-g -std=c++11 -Wall -pedantic"
       script:
         - cmake . 
         - make      
@@ -67,7 +67,7 @@ matrix:
             - gcc-6
             - g++-6
       env:
-        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6 && CXXFLAGS=-g -std=c++11 -Wall -pedantic"
       script:
         - cmake . 
         - make      
@@ -83,7 +83,7 @@ matrix:
             - gcc-7
             - g++-7
       env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7 && CXXFLAGS=-g -std=c++11 -Wall -pedantic"
       script:
         - cmake . 
         - make      
