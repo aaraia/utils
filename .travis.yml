@@ -1,0 +1,189 @@
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode8.3
+      compiler: clang
+      script: 
+        - brew update          
+        - cmake ./src -G Xcode
+        - xcodebuild
+        
+    - os: osx
+      osx_image: xcode9
+      compiler: clang
+      script: 
+        - brew update          
+        - cmake ./src -G Xcode
+        - xcodebuild
+        
+    - os: osx
+      osx_image: xcode9.1
+      compiler: clang
+      script: 
+        - brew update          
+        - cmake ./src -G Xcode
+        - xcodebuild
+        
+    - os: osx
+      osx_image: xcode9.2
+      compiler: clang
+      script: 
+        - brew update          
+        - cmake ./src -G Xcode
+        - xcodebuild
+        
+    - os: osx
+      osx_image: xcode9.3beta
+      compiler: clang
+      script: 
+        - brew update          
+        - cmake ./src -G Xcode
+        - xcodebuild
+
+    # works on Precise and Trusty
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-5
+            - g++-5
+      env:
+        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+      script:
+        - cmake ./src 
+        - make      
+
+    # works on Precise and Trusty
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-6
+            - g++-6
+      env:
+        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+      script:
+        - cmake ./src 
+        - make      
+
+    # works on Precise and Trusty
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-7
+            - g++-7
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+      script:
+        - cmake ./src 
+        - make      
+  
+    # works on Precise and Trusty
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+      env:
+        - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6"
+      script:
+        - cmake ./src 
+        - make
+
+    # works on Precise and Trusty
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+          packages:
+            - clang-3.7
+      env:
+        - MATRIX_EVAL="CC=clang-3.7 && CXX=clang++-3.7"
+      script:
+        - cmake ./src 
+        - make
+
+    # works on Precise and Trusty
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+          packages:
+            - clang-3.8
+      env:
+        - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8"
+      script:
+        - cmake ./src 
+        - make
+
+
+    # works on Trusty
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-3.9
+          packages:
+            - clang-3.9
+      env:
+        - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
+      script:
+        - cmake ./src 
+        - make
+
+    # works on Trusty
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-4.0
+          packages:
+            - clang-4.0
+      env:
+        - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
+      script:
+        - cmake ./src 
+        - make
+
+    # works on Trusty
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - clang-5.0
+      env:
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+      script:
+        - cmake ./src 
+        - make
+
+before_install:
+    - eval "${MATRIX_EVAL}"
+    
+language:
+  - cpp
