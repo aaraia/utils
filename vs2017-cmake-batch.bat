@@ -1,0 +1,1 @@
+start /WAIT cmake.exe . -Bbin/vs2017 -G "Visual Studio 15 2017"
