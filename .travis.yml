@@ -99,7 +99,7 @@ matrix:
           packages:
             - clang-3.6
       env:
-        - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6"
+        - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6 && CXXFLAGS=-std=c++11"
       script:
         - cmake . 
         - make
@@ -115,7 +115,7 @@ matrix:
           packages:
             - clang-3.7
       env:
-        - MATRIX_EVAL="CC=clang-3.7 && CXX=clang++-3.7"
+        - MATRIX_EVAL="CC=clang-3.7 && CXX=clang++-3.7 && CXXFLAGS=-std=c++11"
       script:
         - cmake .
         - make
@@ -131,7 +131,7 @@ matrix:
           packages:
             - clang-3.8
       env:
-        - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8"
+        - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8 && CXXFLAGS=-std=c++11"
       script:
         - cmake . 
         - make
@@ -147,7 +147,7 @@ matrix:
           packages:
             - clang-3.9
       env:
-        - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
+        - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9 && CXXFLAGS=-std=c++11"
       script:
         - cmake . 
         - make
@@ -162,7 +162,7 @@ matrix:
           packages:
             - clang-4.0
       env:
-        - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
+        - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0 && CXXFLAGS=-std=c++11"
       script:
         - cmake . 
         - make
@@ -177,7 +177,7 @@ matrix:
           packages:
             - clang-5.0
       env:
-        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0 && CXXFLAGS=-std=c++11"
       script:
         - cmake . 
         - make
