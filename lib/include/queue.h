@@ -50,7 +50,7 @@ namespace utils {
 			Node* deepCopy(Node* node);
 
 		private:
-			Node * mHead;
+			Node* mHead;
 
 		};  //  Queue
 
@@ -72,8 +72,9 @@ namespace utils {
 
 		}
 
+		//  putting the typename before the const causes an error in gcc
 		template<class T>
-		Queue<T>::Node::Node(typename const Queue<T>::Node& other)
+		Queue<T>::Node::Node(const typename Queue<T>::Node& other)
 			: mData()
 			, mNext(nullptr)
 		{
