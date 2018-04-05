@@ -1,1 +1,1 @@
-start /WAIT cmake.exe src -Bbin/clang-msw -G "Unix Makefiles" -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang-cl.exe" -DCMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang-cl.exe"
+start /WAIT cmake.exe . -Bbin/clang-msw -G "Unix Makefiles" -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang-cl.exe" -DCMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang-cl.exe"
