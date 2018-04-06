@@ -11,7 +11,6 @@ namespace utils {
 		template<class T>
 		class Stack
 		{
-
 		private:
 			enum { DEFAULT_SIZE = 5 };
 
@@ -19,7 +18,8 @@ namespace utils {
 			Stack() noexcept;
 			Stack(const Stack<T>& rhs);
 			Stack(Stack<T>&& rhs) noexcept;
-			Stack& operator=(Stack<T> rhs) noexcept;
+			Stack& operator=(const Stack<T>& rhs);
+			Stack& operator=(Stack<T>&& rhs) noexcept;
 			~Stack();
 
 			bool empty() const;
@@ -32,69 +32,82 @@ namespace utils {
 			template<class... Args>
 			void emplace(Args&&... args);
 
+			std::size_t getCapacity() const { return mCapacity; }
+			std::size_t getSize() const { return mSize; }
+
 		private:
-			bool resize(const std::size_t iNewCapacity);
-			T* safeDeepCopy(const T* const pSource, const std::size_t iCapacity, const std::size_t iSize);
-			T* move(const T* const pSource, const std::size_t iCapacity, const std::size_t iSize);
+			bool resize(const std::size_t newCapacity);
+			T* safeDeepCopy(const T* const source, const std::size_t capacity, const std::size_t size);
+			T* move(const T* const source, const std::size_t capacity, const std::size_t size);
 			void swap(Stack<T>& rhs) noexcept;
 			void clear();
 
 		private:
-			std::size_t m_iCapacity;
-			std::size_t m_iSize;
-			T* m_pBase;
+			std::size_t mCapacity = 0;
+			std::size_t mSize = 0;
+			T* mBase = nullptr;
 		};
 
 		template<class T>
 		template<class... Args>
 		void Stack<T>::emplace(Args&&... args)
 		{
+			//  depending on type deduction call the right push method
 			push(std::forward<Args>(args)...);
 		}
 
 		template<class T>
 		Stack<T>::Stack() noexcept
-			: m_iCapacity(0)
-			, m_iSize(0)
-			, m_pBase(nullptr)
 		{
 
 		}
 
 		template<class T>
 		Stack<T>::Stack(const Stack<T>& rhs)
-			: m_iCapacity(0)
-			, m_iSize(0)
-			, m_pBase(nullptr)
 		{
 			try {
-				m_pBase = safeDeepCopy(rhs.m_pBase, rhs.m_iCapacity, rhs.m_iSize);
-			}
-			catch (...) {
+				mBase = safeDeepCopy(rhs.mBase, rhs.mCapacity, rhs.mSize);
+			} catch (...) {
 				throw;
 			}
 
-			m_iCapacity = rhs.m_iCapacity;
-			m_iSize = rhs.m_iSize;
+			mCapacity = rhs.mCapacity;
+			mSize = rhs.mSize;
 		}
 
 		template<class T>
 		Stack<T>::Stack(Stack<T>&& rhs) noexcept
-			: m_iCapacity(0)
-			, m_iSize(0)
-			, m_pBase(nullptr)
 		{
 			swap(rhs);
 		}
 
 		template<class T>
-		Stack<T>& Stack<T>::operator=(Stack<T> rhs) noexcept
+		Stack<T>& Stack<T>::operator=(const Stack<T>& rhs)
 		{
-			//  taking parameter by value
-			//  1) with rvalue will move
-			//  2) with lvalue will copy 
+			//  check for self assignment
+			if (this == &rhs) return *this;
 
+			//  make a copy
+			Stack<T> rhsCopy(rhs);
+
+			//  swap with copy
+			swap(rhsCopy);
+
+			//  copy will be destructed when function returns
+
+			return *this;
+		}
+
+		template<class T>
+		Stack<T>& Stack<T>::operator=(Stack<T>&& rhs) noexcept
+		{
+			//  check for self move
+			if (this == &rhs) return *this;
+
+			//  swap with rhs to take over its internals
 			swap(rhs);
+
+			//  rhs is now responsible for "this" resources
 
 			return *this;
 		}
@@ -102,14 +115,12 @@ namespace utils {
 		template<class T>
 		Stack<T>::~Stack()
 		{
-			//  T destructor could throw
-			//  if it does do not allow the exception 
-			//  to propagate out of the destructor
 			try {
 				clear();
-			}
-			catch (...) {
-				//  maybe some error logging if the client has enabled it? CERR_ENABLED
+			} catch (...) {
+				//  T destructor could throw
+				//  if it does do not allow the exception 
+				//  to propagate out of the destructor
 			}
 		}
 
@@ -119,43 +130,40 @@ namespace utils {
 		{
 			if (empty()) return;
 
-			try {
-				(m_pBase + (m_iSize - 1))->~T();
-			}
-			catch (...) {
-				throw;
-			}
+			(mBase + (mSize - 1))->~T();
 
-			--m_iSize;
+			--mSize;
 		}
 
 		template<class T>
 		bool Stack<T>::push(const T& t)
 		{
-			if ((m_iSize + 1) > m_iCapacity) {
-				if (m_iCapacity < (std::numeric_limits<std::size_t>::max() / 3)) {
-					if (!resize((m_iCapacity == 0 ? DEFAULT_SIZE : m_iCapacity * 2))) {
-						//  failed to resize
-						return false;
+			if ((mSize + 1) > mCapacity) {
+				if (mCapacity < (std::numeric_limits<std::size_t>::max() / 3)) {
+					if (mCapacity == 0) {
+						//  empty stack
+						if (!resize(DEFAULT_SIZE)) {
+							//  failed to resize
+							return false;
+						}
+					} else {
+						if (!resize(mCapacity * 2)) {
+							//  failed to resize
+							return false;
+						}
 					}
-				}
-				else {
+				} else {
 					//  cannot grow any larger
 					return false;
 				}
 			}
 
-			try {
-				//  T constructor may throw
-				new (m_pBase + m_iSize) T(t);
-			}
-			catch (...) {
-				throw;
-			}
+			//  T constructor may throw
+			new (mBase + mSize) T(t);
 
 			//  successfully pushed
 			//  increment
-			++m_iSize;
+			++mSize;
 
 			return true;
 		}
@@ -163,28 +171,31 @@ namespace utils {
 		template<class T>
 		bool Stack<T>::push(T&& t)
 		{
-			if ((m_iSize + 1) > m_iCapacity) {
-				if (m_iCapacity < (std::numeric_limits<std::size_t>::max() / 3)) {
-					if (!resize(m_iCapacity * 2)) {
-						//  failed to resize
-						return false;
+			if ((mSize + 1) > mCapacity) {
+				if (mCapacity < (std::numeric_limits<std::size_t>::max() / 3)) {
+					if (mCapacity == 0) {
+						//  empty stack
+						if (!resize(DEFAULT_SIZE)) {
+							//  failed to resize
+							return false;
+						}
+
+					} else {
+						if (!resize(mCapacity * 2)) {
+							//  failed to resize
+							return false;
+						}
 					}
-				}
-				else {
+				} else {
 					//  cannot grow any larger
 					return false;
 				}
 			}
 
-			try {
-				//  T move constructor may throw, shouldnt but may do
-				new (m_pBase + m_iSize) T(std::move(t));
-			}
-			catch (...) {
-				throw;
-			}
+			//  T move constructor may throw, shouldnt but may do
+			new (mBase + mSize) T(std::move(t));
 
-			++m_iSize;
+			++mSize;
 
 			return true;
 		}
@@ -194,7 +205,7 @@ namespace utils {
 		template<class T>
 		const T& Stack<T>::top() const
 		{
-			return *(m_pBase + (m_iSize - 1));
+			return *(mBase + (mSize - 1));
 		}
 
 		//  returns a reference to the top element in the stack
@@ -202,49 +213,52 @@ namespace utils {
 		template<class T>
 		T& Stack<T>::top()
 		{
-			return *(m_pBase + (m_iSize - 1));
+			return *(mBase + (mSize - 1));
 		}
 
 		//  checks size of stack and returns true (if empty) or false 
 		template<class T>
 		bool Stack<T>::empty() const
 		{
-			return m_iSize == 0;
+			return mSize == 0;
 		}
 
 		//  increases the size of the stack by allocating a larger block of memory
 		//  and copying the stacks elements to it.
 		template<class T>
-		bool Stack<T>::resize(const std::size_t iNewCapacity)
+		bool Stack<T>::resize(const std::size_t newCapacity)
 		{
 			try {
-				T* p = move(m_pBase, iNewCapacity, m_iSize);
-				m_pBase = p;
-				m_iCapacity = iNewCapacity;
+				T* p = move(mBase, newCapacity, mSize);
+				mBase = p;
+				mCapacity = newCapacity;
 				return true;
-			}
-			catch (...) {
+			} catch (...) {
 				return false;
 			}
 		}
 
 		template<class T>
-		T* Stack<T>::safeDeepCopy(const T* const pSource, const std::size_t iCapacity, const std::size_t iSize)
+		T* Stack<T>::safeDeepCopy(const T* const source, const std::size_t capacity, const std::size_t size)
 		{
 			T* p = nullptr;
-			std::size_t iCurrent = 0;
+			std::size_t current = 0;
+
+			//  we try our deep copy
+			//  if any exceptions are thrown
+			//  we call the destructor of any already copy-constructed Ts
+			//  and clear up any memory
 
 			try {
-				p = static_cast<T*>(::operator new(sizeof(T) * iCapacity));
+				p = static_cast<T*>(::operator new(sizeof(T) * capacity));
 
-				for (std::size_t i = 0; i < iSize; ++i, ++iCurrent) {
-					new (p + i) T(*(pSource + i));
+				for (std::size_t i = 0; i < size; ++i, ++current) {
+					new (p + i) T(*(source + i));
 				}
 
 				return p;
-			}
-			catch (...) {
-				for (std::size_t i = 0; i < iCurrent; ++i) {
+			} catch (...) {
+				for (std::size_t i = 0; i < current; ++i) {
 					(p + i)->~T();
 				}
 
@@ -255,22 +269,25 @@ namespace utils {
 		}
 
 		template<class T>
-		T* Stack<T>::move(const T* const pSource, const std::size_t iCapacity, const std::size_t iSize)
+		T* Stack<T>::move(const T* const source, const std::size_t capacity, const std::size_t size)
 		{
 			T* p = nullptr;
-			std::size_t iCurrent = 0;
+			std::size_t current = 0;
 
+			//  we try our move
+			//  if any exceptions are thrown
+			//  we call the destructor of any already move constructed Ts
+			//  and clear up any memory
 			try {
-				p = static_cast<T*>(::operator new(sizeof(T) * iCapacity));
+				p = static_cast<T*>(::operator new(sizeof(T) * capacity));
 
-				for (std::size_t i = 0; i < iSize; ++i, ++iCurrent) {
-					new (p + i) T(std::move(*(pSource + i)));
+				for (std::size_t i = 0; i < size; ++i, ++current) {
+					new (p + i) T(std::move(*(source + i)));
 				}
 
 				return p;
-			}
-			catch (...) {
-				for (std::size_t i = 0; i < iCurrent; ++i) {
+			} catch (...) {
+				for (std::size_t i = 0; i < current; ++i) {
 					(p + i)->~T();
 				}
 
@@ -284,21 +301,21 @@ namespace utils {
 		void Stack<T>::swap(Stack<T>& rhs) noexcept
 		{
 			using std::swap;
-			swap(m_pBase, rhs.m_pBase);
-			swap(m_iCapacity, rhs.m_iCapacity);
-			swap(m_iSize, rhs.m_iSize);
+			swap(mBase, rhs.mBase);
+			swap(mCapacity, rhs.mCapacity);
+			swap(mSize, rhs.mSize);
 		}
 
 		template<class T>
 		void Stack<T>::clear()
 		{
-			if (!m_pBase) return;
+			if (!mBase) return;
 
-			for (std::size_t i = 0; i < m_iSize; ++i) {
-				(m_pBase + i)->~T();
+			for (std::size_t i = 0; i < mSize; ++i) {
+				(mBase + i)->~T();
 			}
 
-			::operator delete (m_pBase);
+			::operator delete (mBase);
 		}
 	}
 }

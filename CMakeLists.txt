@@ -1,8 +1,6 @@
 cmake_minimum_required (VERSION 3.9)
 project (Utils)
 
-include (CTest)
-
 # The version number.
 set (Utils_VERSION_MAJOR 1)
 set (Utils_VERSION_MINOR 0)
@@ -58,23 +56,28 @@ set (LIB_SRCS
 	lib/include/bst.h 
 	lib/src/bst.cpp)
 	
-#set (PROJECT_SRCS )
-
 set (TEST_SRCS 
-	test/include/testOne.h 
-	test/src/testOne.cpp)
+	test/src/stack_emplace_push_copy_test.cpp
+	test/src/stack_emplace_push_move_test.cpp
+	test/src/stack_copy_constructor_test.cpp
+	test/src/stack_copy_operator_test.cpp
+	test/src/stack_move_constructor_test.cpp
+	test/src/stack_move_operator_test.cpp
+	test/src/stack_pop_test.cpp
+	test/src/stack_push_test.cpp
+	test/src/stack_resize_test.cpp)
 
 # add library
-add_library (lib ${LIB_SRCS})
+add_library (UtilsLib ${LIB_SRCS})
 
 # add the executable
-add_executable (utils proj/src/main.cpp)
-target_link_libraries (utils lib)
+add_executable (UtilsMain proj/src/main.cpp)
+target_link_libraries (UtilsMain UtilsLib)
 
 # add test project
-add_executable (UnitTests ${TEST_SRCS})
-target_link_libraries (UnitTests lib)
-target_link_libraries (UnitTests gtest_main)
+add_executable (UtilsTests ${TEST_SRCS})
+target_link_libraries (UtilsTests UtilsLib)
+target_link_libraries (UtilsTests gtest_main)
 
 #
 #
@@ -90,7 +93,7 @@ target_link_libraries (UnitTests gtest_main)
 #   TESTS
 #
 #
-
+include (CTest)
 add_test (NAME unit COMMAND ${CMAKE_BINARY_DIR}/UnitTests)
 
 
