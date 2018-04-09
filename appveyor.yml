@@ -35,6 +35,6 @@ build:
   
 test_script:
   - cd Build
-  - cd $env:CONFIGURATION
+  - cd %CONFIGURATION%
   - UtilsTests.exe
       
