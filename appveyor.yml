@@ -34,8 +34,8 @@ build:
   verbosity: normal                     # MSBuild verbosity level {quiet|minimal|normal|detailed}
   
 test_script:
-matrix:
-    only:
-      - configuration: Release
+- cd Build
+- cd $($env:CONFIGURATION))
+- UtilsTests.exe
       
 
