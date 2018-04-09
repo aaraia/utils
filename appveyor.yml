@@ -33,12 +33,8 @@ build:
   parallel: true                        # enable MSBuild parallel builds
   verbosity: normal                     # MSBuild verbosity level {quiet|minimal|normal|detailed}
   
-#test_script:
-#  - cd Build
-#  - cd $env:CONFIGURATION
-#  - UtilsTests.exe
-  
 test_script:
-  - $env:APPVEYOR_BUILD_FOLDER\$env:CONFIGURATION\UtilsTests.exe
+  - cd Build
+  - cd $env:CONFIGURATION
+  - UtilsTests.exe
       
-
