@@ -75,7 +75,7 @@ namespace utils {
 		}
 
 		template<typename T>
-		Queue<T>::~Queue()
+		Queue<T>::~Queue() noexcept
 		{
 			try {
 				clear();
