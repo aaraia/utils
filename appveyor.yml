@@ -33,7 +33,15 @@ build:
   parallel: true                        # enable MSBuild parallel builds
   verbosity: normal                     # MSBuild verbosity level {quiet|minimal|normal|detailed}
   
+configuration: Debug
+test_script:
+  - cd Build
+  - cd Debug
+  - UtilsTests.exe
+  
+configuration: Release
 test_script:
   - cd Build
   - cd Release
   - UtilsTests.exe
+
