@@ -6,7 +6,7 @@ set (Utils_VERSION_MAJOR 1)
 set (Utils_VERSION_MINOR 0)
 
 # set the c++ standard
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON) # needed for googletest to compile in gcc
 
