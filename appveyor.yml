@@ -32,3 +32,9 @@ build:
   project: Build\utils.sln              # path to Visual Studio solution or project
   parallel: true                        # enable MSBuild parallel builds
   verbosity: normal                     # MSBuild verbosity level {quiet|minimal|normal|detailed}
+
+after_build:
+  - Build\Release\UtilsTests.exe
+  
+test:
+  - Build\Release\UtilsTests.exe
