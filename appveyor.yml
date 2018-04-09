@@ -39,6 +39,6 @@ build:
 #  - UtilsTests.exe
   
 test_script:
-  - $(APPVEYOR_BUILD_FOLDER)\$(CONFIGURATION)\UtilsTests.exe
+  - $env:APPVEYOR_BUILD_FOLDER\$env:CONFIGURATION\UtilsTests.exe
       
 
