@@ -9,7 +9,7 @@
 namespace utils {
 	namespace storage {
 
-		template <class T>
+		template <typename T>
 		class CList
 		{
 			class CNode
@@ -52,7 +52,7 @@ namespace utils {
 		};
 
 		//  default constructor
-		template <class T>
+		template <typename T>
 		CList<T>::CList()
 			: m_pHead(nullptr)
 		{
@@ -60,7 +60,7 @@ namespace utils {
 		}
 
 		//  custom constructor - create a list of N size
-		template <class T>
+		template <typename T>
 		CList<T>::CList(const int iSize)
 			: m_pHead(nullptr)
 		{
@@ -89,7 +89,7 @@ namespace utils {
 		}
 
 		//  custom constructor - create a list populated with data
-		template <class T>
+		template <typename T>
 		CList<T>::CList(const std::initializer_list<T>& il)
 			: m_pHead(nullptr)
 		{
@@ -117,7 +117,7 @@ namespace utils {
 			}
 		}
 
-		template <class T>
+		template <typename T>
 		CList<T>::CList(const CList<T>& rhs)
 		{
 			CNode* pLhsNode = nullptr;
@@ -142,7 +142,7 @@ namespace utils {
 			}
 		}
 
-		template <class T>
+		template <typename T>
 		CList<T>::CList(CList<T>&& rhs)
 		{
 			//  take ownership of the rhs head pointer
@@ -152,7 +152,7 @@ namespace utils {
 			rhs.m_pHead = nullptr;
 		}
 
-		template <class T>
+		template <typename T>
 		CList<T>& CList<T>::operator=(const CList<T>& rhs)
 		{
 			//  copy
@@ -164,7 +164,7 @@ namespace utils {
 			return this;
 		}
 
-		template <class T>
+		template <typename T>
 		CList<T>& CList<T>::operator=(CList<T>&& rhs)
 		{
 			//  check for self move
@@ -190,7 +190,7 @@ namespace utils {
 			rhs.m_pHead = nullptr;
 		}
 
-		template <class T>
+		template <typename T>
 		CList<T>::~CList()
 		{
 			CNode* pNode = m_pHead;
@@ -208,7 +208,7 @@ namespace utils {
 			m_pHead = nullptr;
 		}
 
-		template <class T>
+		template <typename T>
 		void CList<T>::Insert(const T& t)
 		{
 			CNode* pNode = m_pHead;
@@ -234,7 +234,7 @@ namespace utils {
 			}
 		}
 
-		template <class T>
+		template <typename T>
 		void CList<T>::Remove(const T& t)
 		{
 			CNode* pLastNode = nullptr;
