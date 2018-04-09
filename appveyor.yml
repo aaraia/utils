@@ -37,7 +37,5 @@ test_script:
 matrix:
     only:
       - configuration: Release
-      - cd Build
-      - cd Release
-      - UtilsTests.exe
+      
 
