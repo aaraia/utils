@@ -8,19 +8,18 @@
 namespace utils {
 	namespace storage {
 
-		template<class T>
-		class Stack
-		{
+		template<typename T>
+		class Stack {
 		private:
 			enum { DEFAULT_SIZE = 5 };
 
 		public:
-			Stack() noexcept;
+			Stack() = default;
 			Stack(const Stack<T>& rhs);
 			Stack(Stack<T>&& rhs) noexcept;
 			Stack& operator=(const Stack<T>& rhs);
 			Stack& operator=(Stack<T>&& rhs) noexcept;
-			~Stack();
+			~Stack() noexcept;
 
 			bool empty() const;
 			void pop();
@@ -48,21 +47,7 @@ namespace utils {
 			T* mBase = nullptr;
 		};
 
-		template<class T>
-		template<class... Args>
-		void Stack<T>::emplace(Args&&... args)
-		{
-			//  depending on type deduction call the right push method
-			push(std::forward<Args>(args)...);
-		}
-
-		template<class T>
-		Stack<T>::Stack() noexcept
-		{
-
-		}
-
-		template<class T>
+		template<typename T>
 		Stack<T>::Stack(const Stack<T>& rhs)
 		{
 			try {
@@ -75,45 +60,46 @@ namespace utils {
 			mSize = rhs.mSize;
 		}
 
-		template<class T>
+		template<typename T>
 		Stack<T>::Stack(Stack<T>&& rhs) noexcept
 		{
 			swap(rhs);
 		}
 
-		template<class T>
+		template<typename T>
 		Stack<T>& Stack<T>::operator=(const Stack<T>& rhs)
 		{
 			//  check for self assignment
-			if (this == &rhs) return *this;
+			if (this != &rhs) {
 
-			//  make a copy
-			Stack<T> rhsCopy(rhs);
+				//  make a copy
+				Stack<T> rhsCopy(rhs);
 
-			//  swap with copy
-			swap(rhsCopy);
+				//  swap with copy
+				swap(rhsCopy);
+			}
 
 			//  copy will be destructed when function returns
 
 			return *this;
 		}
 
-		template<class T>
+		template<typename T>
 		Stack<T>& Stack<T>::operator=(Stack<T>&& rhs) noexcept
 		{
 			//  check for self move
-			if (this == &rhs) return *this;
-
-			//  swap with rhs to take over its internals
-			swap(rhs);
+			if (this != &rhs) {
+				//  swap with rhs to take over its internals
+				swap(rhs);
+			}
 
 			//  rhs is now responsible for "this" resources
 
 			return *this;
 		}
 
-		template<class T>
-		Stack<T>::~Stack()
+		template<typename T>
+		Stack<T>::~Stack() noexcept
 		{
 			try {
 				clear();
@@ -125,7 +111,7 @@ namespace utils {
 		}
 
 		//  no op on an empty stack
-		template<class T>
+		template<typename T>
 		void Stack<T>::pop()
 		{
 			if (empty()) return;
@@ -135,7 +121,7 @@ namespace utils {
 			--mSize;
 		}
 
-		template<class T>
+		template<typename T>
 		bool Stack<T>::push(const T& t)
 		{
 			if ((mSize + 1) > mCapacity) {
@@ -168,7 +154,7 @@ namespace utils {
 			return true;
 		}
 
-		template<class T>
+		template<typename T>
 		bool Stack<T>::push(T&& t)
 		{
 			if ((mSize + 1) > mCapacity) {
@@ -202,7 +188,7 @@ namespace utils {
 
 		//  returns a const reference to the top element in the stack
 		//  it is up to the caller to make sure stack is non-empty using Empty() function
-		template<class T>
+		template<typename T>
 		const T& Stack<T>::top() const
 		{
 			return *(mBase + (mSize - 1));
@@ -210,14 +196,22 @@ namespace utils {
 
 		//  returns a reference to the top element in the stack
 		//  it is up to the caller to make sure stack is non-empty using Empty() function
-		template<class T>
+		template<typename T>
 		T& Stack<T>::top()
 		{
 			return *(mBase + (mSize - 1));
 		}
 
+		template<typename T>
+		template<class... Args>
+		void Stack<T>::emplace(Args&&... args)
+		{
+			//  depending on type deduction call the right push method
+			push(std::forward<Args>(args)...);
+		}
+
 		//  checks size of stack and returns true (if empty) or false 
-		template<class T>
+		template<typename T>
 		bool Stack<T>::empty() const
 		{
 			return mSize == 0;
@@ -225,7 +219,7 @@ namespace utils {
 
 		//  increases the size of the stack by allocating a larger block of memory
 		//  and copying the stacks elements to it.
-		template<class T>
+		template<typename T>
 		bool Stack<T>::resize(const std::size_t newCapacity)
 		{
 			try {
@@ -238,7 +232,7 @@ namespace utils {
 			}
 		}
 
-		template<class T>
+		template<typename T>
 		T* Stack<T>::safeDeepCopy(const T* const source, const std::size_t capacity, const std::size_t size)
 		{
 			T* p = nullptr;
@@ -268,7 +262,7 @@ namespace utils {
 			}
 		}
 
-		template<class T>
+		template<typename T>
 		T* Stack<T>::move(const T* const source, const std::size_t capacity, const std::size_t size)
 		{
 			T* p = nullptr;
@@ -297,7 +291,7 @@ namespace utils {
 			}
 		}
 
-		template<class T>
+		template<typename T>
 		void Stack<T>::swap(Stack<T>& rhs) noexcept
 		{
 			using std::swap;
@@ -306,7 +300,7 @@ namespace utils {
 			swap(mSize, rhs.mSize);
 		}
 
-		template<class T>
+		template<typename T>
 		void Stack<T>::clear()
 		{
 			if (!mBase) return;
