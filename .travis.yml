@@ -144,11 +144,10 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.8
           packages:
-            - libc++
             - clang-3.8
       env:
         - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8"
-        - CPPFLAGS="-stdlib=libc++"
+        - EXTRA_FLAGS="-stdlib=libc++ -fno-omit-frame-pointer -g -O2 -fsanitize=undefined,address -fno-sanitize-recover=all"
       script:
         - cmake . 
         - make
