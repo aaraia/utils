@@ -35,7 +35,7 @@ namespace utils {
 			bool remove(const Key& k);
 
 		private:
-			Node * insertHelper(Node* node, const Key& k, const Data& d, INSERT_RESULT& insertResult);
+			Node* insertHelper(Node* node, const Key& k, const Data& d, INSERT_RESULT& insertResult);
 			Node* removeHelper(Node* node, const Key& k);
 			Node* findLeftMostNode(Node* node, Node*& result);
 

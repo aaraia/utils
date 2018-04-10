@@ -4,7 +4,13 @@
 TEST(stack, move_operator)
 {
 	using utils::storage::Stack;
-	Stack<int> testStack;
+	
+	Stack<int> s1;
+	Stack<int> s2;
 
-	ASSERT_TRUE(true);
+	s2.push(1);
+
+	s1 = std::move(s2);
+
+	ASSERT_TRUE(s1.getSize() == 1);
 }

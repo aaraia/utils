@@ -10,6 +10,23 @@ namespace utils {
 
 		template<typename T>
 		class Stack {
+
+		public:
+			friend void swap(Stack<T>& lhs, Stack<T>& rhs) noexcept
+			{
+				std::size_t tempCapacity(lhs.mCapacity);
+				lhs.mCapacity = rhs.mCapacity;
+				rhs.mCapacity = tempCapacity;
+
+				std::size_t tempSize(lhs.mSize);
+				lhs.mSize = rhs.mSize;
+				rhs.mSize = tempSize;
+
+				T* tempBase(lhs.mBase);
+				lhs.mBase = rhs.mBase;
+				rhs.mBase = tempBase;
+			}
+
 		private:
 			enum { DEFAULT_SIZE = 5 };
 
@@ -17,9 +34,10 @@ namespace utils {
 			Stack() = default;
 			Stack(const Stack<T>& rhs);
 			Stack(Stack<T>&& rhs) noexcept;
+			~Stack() noexcept;
+
 			Stack& operator=(const Stack<T>& rhs);
 			Stack& operator=(Stack<T>&& rhs) noexcept;
-			~Stack() noexcept;
 
 			bool empty() const;
 			void pop();
@@ -38,7 +56,6 @@ namespace utils {
 			bool resize(const std::size_t newCapacity);
 			T* safeDeepCopy(const T* const source, const std::size_t capacity, const std::size_t size);
 			T* move(const T* const source, const std::size_t capacity, const std::size_t size);
-			void swap(Stack<T>& rhs) noexcept;
 			void clear();
 
 		private:
@@ -63,7 +80,20 @@ namespace utils {
 		template<typename T>
 		Stack<T>::Stack(Stack<T>&& rhs) noexcept
 		{
-			swap(rhs);
+			using std::swap;
+			swap(*this, rhs);
+		}
+
+		template<typename T>
+		Stack<T>::~Stack() noexcept
+		{
+			try {
+				clear();
+			} catch (...) {
+				//  T destructor could throw
+				//  if it does do not allow the exception 
+				//  to propagate out of the destructor
+			}
 		}
 
 		template<typename T>
@@ -76,7 +106,8 @@ namespace utils {
 				Stack<T> rhsCopy(rhs);
 
 				//  swap with copy
-				swap(rhsCopy);
+				using std::swap;
+				swap(*this, rhsCopy);
 			}
 
 			//  copy will be destructed when function returns
@@ -90,24 +121,13 @@ namespace utils {
 			//  check for self move
 			if (this != &rhs) {
 				//  swap with rhs to take over its internals
-				swap(rhs);
+				using std::swap;
+				swap(*this, rhs);
 			}
 
 			//  rhs is now responsible for "this" resources
 
 			return *this;
-		}
-
-		template<typename T>
-		Stack<T>::~Stack() noexcept
-		{
-			try {
-				clear();
-			} catch (...) {
-				//  T destructor could throw
-				//  if it does do not allow the exception 
-				//  to propagate out of the destructor
-			}
 		}
 
 		//  no op on an empty stack
@@ -289,15 +309,6 @@ namespace utils {
 
 				throw;
 			}
-		}
-
-		template<typename T>
-		void Stack<T>::swap(Stack<T>& rhs) noexcept
-		{
-			using std::swap;
-			swap(mBase, rhs.mBase);
-			swap(mCapacity, rhs.mCapacity);
-			swap(mSize, rhs.mSize);
 		}
 
 		template<typename T>
