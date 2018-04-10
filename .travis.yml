@@ -1,6 +1,10 @@
 # needed to run .travis-libcxx-setup.sh
 sudo: required
 
+env:
+  global:
+    - /usr/local/bin:$PATH
+
 matrix:
   include:
     - os: osx
@@ -153,7 +157,7 @@ matrix:
         - LIBCXX_BUILD=1
         - EXTRA_FLAGS="-stdlib=libc++ -fno-omit-frame-pointer -g -O2 -fsanitize=undefined,address -fno-sanitize-recover=all"
       script:
-        - cmake . 
+        - cmake . -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}"
         - make
         - ./UtilsTests
 
@@ -172,7 +176,7 @@ matrix:
         - LIBCXX_BUILD=1
         - CPPFLAGS="-stdlib=libc++"
       script:
-        - cmake . 
+        - cmake . -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}"
         - make
         - ./UtilsTests
 
