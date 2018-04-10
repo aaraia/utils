@@ -3,7 +3,6 @@ version: "{build}"
 
 os:
   - Visual Studio 2017
-  - Visual Studio 2015
 
 init:
   - git config --global core.autocrlf input
@@ -33,3 +32,9 @@ build:
   project: Build\utils.sln              # path to Visual Studio solution or project
   parallel: true                        # enable MSBuild parallel builds
   verbosity: normal                     # MSBuild verbosity level {quiet|minimal|normal|detailed}
+  
+test_script:
+  - cd Build
+  - cd %CONFIGURATION%
+  - UtilsTests.exe
+      

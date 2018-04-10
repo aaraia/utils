@@ -7,6 +7,8 @@ matrix:
         - brew update          
         - cmake . -G Xcode
         - xcodebuild
+        - cd Debug
+        - ./UtilsTests
         
     - os: osx
       osx_image: xcode9
@@ -15,6 +17,8 @@ matrix:
         - brew update          
         - cmake . -G Xcode
         - xcodebuild
+        - cd Debug
+        - ./UtilsTests
         
     - os: osx
       osx_image: xcode9.1
@@ -23,6 +27,8 @@ matrix:
         - brew update          
         - cmake . -G Xcode
         - xcodebuild
+        - cd Debug
+        - ./UtilsTests
         
     - os: osx
       osx_image: xcode9.2
@@ -31,6 +37,8 @@ matrix:
         - brew update          
         - cmake . -G Xcode
         - xcodebuild
+        - cd Debug
+        - ./UtilsTests
         
     - os: osx
       osx_image: xcode9.3beta
@@ -39,6 +47,8 @@ matrix:
         - brew update          
         - cmake . -G Xcode
         - xcodebuild
+        - cd Debug
+        - ./UtilsTests
 
     # works on Precise and Trusty
     - os: linux
@@ -54,7 +64,8 @@ matrix:
         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
       script:
         - cmake . 
-        - make      
+        - make
+        - ./UtilsTests
 
     # works on Precise and Trusty
     - os: linux
@@ -70,7 +81,8 @@ matrix:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
       script:
         - cmake . 
-        - make      
+        - make
+        - ./UtilsTests
 
     # works on Precise and Trusty
     - os: linux
@@ -86,7 +98,8 @@ matrix:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
       script:
         - cmake . 
-        - make      
+        - make
+        - ./UtilsTests
   
     # works on Precise and Trusty
     - os: linux
@@ -103,6 +116,7 @@ matrix:
       script:
         - cmake . 
         - make
+        - ./UtilsTests
 
     # works on Precise and Trusty
     - os: linux
@@ -119,6 +133,7 @@ matrix:
       script:
         - cmake .
         - make
+        - ./UtilsTests
 
     # works on Precise and Trusty
     - os: linux
@@ -135,6 +150,7 @@ matrix:
       script:
         - cmake . 
         - make
+        - ./UtilsTests
 
 
     # works on Trusty
@@ -151,6 +167,7 @@ matrix:
       script:
         - cmake . 
         - make
+        - ./UtilsTests
 
     # works on Trusty
     - os: linux
@@ -166,6 +183,7 @@ matrix:
       script:
         - cmake . 
         - make
+        - ./UtilsTests
 
     # works on Trusty
     - os: linux
@@ -181,6 +199,7 @@ matrix:
       script:
         - cmake . 
         - make
+        - ./UtilsTests
 
 before_install:
     - eval "${MATRIX_EVAL}"
