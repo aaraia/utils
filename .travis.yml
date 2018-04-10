@@ -147,6 +147,7 @@ matrix:
             - clang-3.8
       env:
         - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8"
+        - LIBCXX_BUILD=1
         - EXTRA_FLAGS="-stdlib=libc++ -fno-omit-frame-pointer -g -O2 -fsanitize=undefined,address -fno-sanitize-recover=all"
       script:
         - cmake . 
@@ -162,10 +163,10 @@ matrix:
           sources:
             - llvm-toolchain-trusty-3.9
           packages:
-            - libc++
             - clang-3.9
       env:
         - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
+        - LIBCXX_BUILD=1
         - CPPFLAGS="-stdlib=libc++"
       script:
         - cmake . 
@@ -206,6 +207,12 @@ matrix:
 
 before_install:
     - eval "${MATRIX_EVAL}"
+
+# need to build libc++ for clang 3.8 and 3.9
+before_script:
+  - if [ -n "${LIBCXX_BUILD}" ]; then
+      source .travis-libcxx-setup.sh;
+fi
     
 language:
   - cpp
