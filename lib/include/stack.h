@@ -90,9 +90,8 @@ namespace utils {
 			try {
 				clear();
 			} catch (...) {
-				//  T destructor could throw
-				//  if it does do not allow the exception 
-				//  to propagate out of the destructor
+				//  T's destructor could be set to noexcept(false) and throw during the delete call
+				//  do not allow any exceptions to propogate from a destructor
 			}
 		}
 

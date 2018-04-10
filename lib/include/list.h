@@ -154,10 +154,8 @@ namespace utils {
 			try {
 				clear();
 			} catch (...) {
-				//  T's destructor could throw during the delete call
+				//  T's destructor could be set to noexcept(false) and throw during the delete call
 				//  do not allow any exceptions to propogate from a destructor
-				//  TODO: but there could be leaked memory here
-				//  maybe just wrap the "delete node" in a try/catch(...)?
 			}
 		}
 
@@ -257,9 +255,10 @@ namespace utils {
 				if (node->mData == t) {
 					if (prev) {
 						//  unlink from list, delete and decrease size of list
-						prev->mNext = node->mNext;
+						Node* next = node->mNext;
 						delete node;
 						node = nullptr;
+						prev->mNext = next;						
 						--mSize;
 					} else {
 						//  remove head
@@ -288,6 +287,11 @@ namespace utils {
 
 				//  delete current node
 				delete node;
+
+				//  T's destructor could be set to noexcept(false) and throw
+				//  could wrap "delete node" in a try/catch to suppress any exceptions
+				//  and continue deleting the rest of the nodes else there could be leaked memory
+				//
 
 				//  iterate to next node
 				node = next;
