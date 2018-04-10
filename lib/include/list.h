@@ -256,13 +256,16 @@ namespace utils {
 				//  found?
 				if (node->mData == t) {
 					if (prev) {
-						//  unlink from list
+						//  unlink from list, delete and decrease size of list
 						prev->mNext = node->mNext;
 						delete node;
+						node = nullptr;
 						--mSize;
 					} else {
 						//  remove head
+						//  decrease size of list
 						delete node;
+						node = nullptr;
 						mHead = nullptr;
 						--mSize;
 					}
