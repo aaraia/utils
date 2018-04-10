@@ -144,9 +144,11 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.8
           packages:
+            - libc++
             - clang-3.8
       env:
         - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8"
+        - CPPFLAGS="-stdlib=libc++"
       script:
         - cmake . 
         - make
@@ -161,9 +163,11 @@ matrix:
           sources:
             - llvm-toolchain-trusty-3.9
           packages:
+            - libc++
             - clang-3.9
       env:
         - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
+        - CPPFLAGS="-stdlib=libc++"
       script:
         - cmake . 
         - make
