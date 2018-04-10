@@ -80,10 +80,8 @@ namespace utils {
 			try {
 				clear();
 			} catch (...) {
-				//  T's destructor could throw during the delete call
+				//  T's destructor could be set to noexcept(false) and throw during the delete call
 				//  do not allow any exceptions to propogate from a destructor
-				//  TODO: but there could be leaked memory here
-				//  maybe just wrap the "delete node" in a try/catch(...)?
 			}
 		}
 
