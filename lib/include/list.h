@@ -198,7 +198,7 @@ namespace utils {
 		void List<T>::emplace(Args&&... args)
 		{
 			//  forward to the relevant insert
-			internalInsert(new Node{ {std::forward<Args>(args)...} , nullptr });
+			internalInsert(new Node{ std::forward<Args>(args)... , nullptr });
 		}
 
 		template <typename T>
