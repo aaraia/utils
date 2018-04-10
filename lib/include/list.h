@@ -32,14 +32,14 @@ namespace utils {
 
 		public:
 			List() = default;
-			explicit List(const std::size_t size);
+			explicit List(const std::size_t size, const T& defaultVal = T{});
 			explicit List(const std::initializer_list<T>& il);
 			List(const List& rhs);
 			List(List&& rhs) noexcept;
 			~List();
 
 			List& operator=(const List& rhs);
-			List& operator=(List&& rhs);
+			List& operator=(List&& rhs) noexcept;
 
 			template<typename ...Args>
 			void emplace(Args&&... args);
@@ -53,19 +53,22 @@ namespace utils {
 			std::size_t getSize() const { return mSize; }
 
 		private:
+			void internalInsert(Node* node);
+
+		private:
 			Node* mHead = nullptr;
 			std::size_t mSize = 0;
 		};
 
 		//  custom constructor - create a list of N size
 		template <typename T>
-		List<T>::List(const std::size_t size)
+		List<T>::List(const std::size_t size, const T& defaultVal)
 		{
 			//  empty list?
 			if (size == 0) return;
 
 			//  create head
-			mHead = new Node{};
+			mHead = new Node{ defaultVal, nullptr };
 
 			//  create a temporary pointer to the head of the list
 			Node* node = mHead;
@@ -73,7 +76,7 @@ namespace utils {
 				//  this is a valid node
 				//  create a new node
 				//  link it to the list
-				node->mNext = new Node{};
+				node->mNext = new Node{ defaultVal, nullptr };
 
 				//  iterate to the next node
 				node = node->mNext;
@@ -177,7 +180,7 @@ namespace utils {
 		}
 
 		template <typename T>
-		List<T>& List<T>::operator=(List<T>&& rhs)
+		List<T>& List<T>::operator=(List<T>&& rhs) noexcept
 		{
 			//  check for self move
 			if (this != &rhs) {
@@ -195,53 +198,19 @@ namespace utils {
 		void List<T>::emplace(Args&&... args)
 		{
 			//  forward to the relevant insert
-			insert(std::forward<Args>(args)...);
+			internalInsert(new Node{ {std::forward<Args>(args)...} , nullptr });
 		}
 
 		template <typename T>
 		void List<T>::insert(const T& t)
 		{
-			Node* tail = mHead;
-
-			//  find the tail of the list
-			while (tail && tail->mNext) {
-				tail = tail->mNext;
-			}
-
-			if (tail) {
-				//  list has a tail
-				//  append this node to the end of the list
-				tail->mNext = new Node{ t, nullptr };
-			} else {
-				//  empty list
-				//  append to head
-				mHead = new Node{ t, nullptr };
-			}
-
-			++mSize;
+			internalInsert(new Node{ t, nullptr });
 		}
 
 		template <typename T>
 		void List<T>::insert(T&& t)
 		{
-			Node* tail = mHead;
-
-			//  find the tail of the list
-			while (tail && tail->mNext) {
-				tail = tail->mNext;
-			}
-
-			if (tail) {
-				//  list has a tail
-				//  append this node to the end of the list
-				tail->mNext = new Node{ std::move(t), nullptr };
-			} else {
-				//  empty list
-				//  append to head
-				mHead = new Node{ std::move(t), nullptr };
-			}
-
-			++mSize;
+			internalInsert(new Node{ std::move(t), nullptr });			
 		}
 
 		template <typename T>
@@ -263,9 +232,10 @@ namespace utils {
 					} else {
 						//  remove head
 						//  decrease size of list
+						Node* newHead = node->mNext;
 						delete node;
 						node = nullptr;
-						mHead = nullptr;
+						mHead = newHead;
 						--mSize;
 					}
 				} else {
@@ -299,6 +269,29 @@ namespace utils {
 
 			mHead = nullptr;
 			mSize = 0;
+		}
+
+		template <typename T>
+		void List<T>::internalInsert(Node* node)
+		{
+			Node* tail = mHead;
+
+			//  find the tail of the list
+			while (tail && tail->mNext) {
+				tail = tail->mNext;
+			}
+
+			if (tail) {
+				//  list has a tail
+				//  append this node to the end of the list
+				tail->mNext = node;
+			} else {
+				//  empty list
+				//  append to head
+				mHead = node;
+			}
+
+			++mSize;
 		}
 	}
 }
