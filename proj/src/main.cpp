@@ -8,7 +8,7 @@
 int main()
 {
 	using utils::storage::Stack;
-	using utils::storage::CList;
+	using utils::storage::List;
 	using utils::storage::Queue;
 	using utils::storage::BST;
 
@@ -23,6 +23,16 @@ int main()
 	stack.pop();
 	stack.empty();
 	int top = stack.top();
+
+	{
+		Stack<int> stackFrom;
+		stackFrom.push(8);
+
+		Stack<int> stackTo;
+
+		swap(stackTo, stackFrom);
+	}
+
 
 	{
 		Stack<int> stackFrom;
@@ -56,9 +66,15 @@ int main()
 		Stack<int> stackTo = std::move(stackFrom);
 	}
 
-	CList<int> list;
-	list.Insert(1);
-	list.Remove(1);
+	List<int> list;
+	list.insert(1);
+	list.remove(1);
+
+	list.insert(1);
+	list.insert(2);
+	list.insert(3);
+	list.insert(4);
+	list.clear();
 
 	Queue<int> queue;
 	queue.push_back(1);
@@ -67,6 +83,15 @@ int main()
 	queue.emplace_front(3);
 	queue.pop_front();
 	queue.clear();
+
+	{
+		Queue<int> queueFrom;
+		queueFrom.push_back(8);
+
+		Queue<int> queueTo;
+
+		swap(queueTo, queueFrom);
+	}
 
 	{
 		Queue<int> queueFrom;

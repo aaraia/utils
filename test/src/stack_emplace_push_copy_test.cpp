@@ -4,7 +4,10 @@
 TEST(stack, emplace_push_copy)
 {
 	using utils::storage::Stack;
-	Stack<int> testStack;
+	Stack<int> s;
 
-	ASSERT_TRUE(true);
+	int num = 1;
+	s.emplace(num);
+
+	ASSERT_TRUE(s.getSize() == 1);
 }

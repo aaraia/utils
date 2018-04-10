@@ -65,7 +65,17 @@ set (TEST_SRCS
 	test/src/stack_move_operator_test.cpp
 	test/src/stack_pop_test.cpp
 	test/src/stack_push_test.cpp
-	test/src/stack_resize_test.cpp)
+	test/src/stack_resize_test.cpp
+	test/src/list_move_constructor_test.cpp
+	test/src/list_move_operator_test.cpp
+	test/src/list_copy_constructor_test.cpp
+	test/src/list_copy_operator_test.cpp
+	test/src/list_emplace_copy_test.cpp
+	test/src/list_emplace_move_test.cpp
+	test/src/list_insert_copy_test.cpp
+	test/src/list_insert_move_test.cpp
+	test/src/list_intialiser_constructor_test.cpp
+	test/src/list_remove_test.cpp)
 
 # add library
 add_library (UtilsLib ${LIB_SRCS})

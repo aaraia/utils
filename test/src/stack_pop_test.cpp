@@ -4,7 +4,9 @@
 TEST(stack, pop)
 {
 	using utils::storage::Stack;
-	Stack<int> testStack;
-
-	ASSERT_TRUE(true);
+	Stack<int> s;
+	s.push(1);
+	s.pop();
+	
+	ASSERT_TRUE(s.empty() == true);
 }

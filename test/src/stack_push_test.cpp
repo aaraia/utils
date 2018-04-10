@@ -4,7 +4,8 @@
 TEST(stack, push)
 {
 	using utils::storage::Stack;
-	Stack<int> testStack;
+	Stack<int> s;
+	s.push(1);
 
-	ASSERT_TRUE(true);
+	ASSERT_TRUE(s.getSize() == 1);
 }

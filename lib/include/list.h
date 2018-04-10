@@ -10,277 +10,288 @@ namespace utils {
 	namespace storage {
 
 		template <typename T>
-		class CList
-		{
-			class CNode
+		class List {
+
+			friend void swap(List<T>& lhs, List<T>& rhs) noexcept
 			{
-			public:
-				CNode() : m_Data(), m_pNext(nullptr) {}
-				CNode(const T& t) : m_Data(t), m_pNext(nullptr) {}
+				Node* tempHead(lhs.mHead);
+				lhs.mHead = rhs.mHead;
+				rhs.mHead = tempHead;
 
-				T& GetData() { return m_Data; }
-				const T& GetData() const { return m_Data; }
+				std::size_t tempSize(lhs.mSize);
+				lhs.mSize = rhs.mSize;
+				rhs.mSize = tempSize;
+			}
 
-				CNode* GetNext() { return m_pNext; }
-				const CNode* GetNext() const { return m_pNext; }
-
-				void SetNext(CNode* pNode) { m_pNext = pNode; }
-
-			private:
-				T m_Data;
-				CNode* m_pNext;
+		private:
+			//  Node
+			struct Node {
+				T mData;
+				Node* mNext = nullptr;
 			};
 
 		public:
-			CList();
-			explicit CList(const int iSize);
-			explicit CList(const std::initializer_list<T>& il);
-			CList(const CList& rhs);
-			CList(CList&& rhs);
+			List() = default;
+			explicit List(const std::size_t size);
+			explicit List(const std::initializer_list<T>& il);
+			List(const List& rhs);
+			List(List&& rhs) noexcept;
+			~List();
 
-			CList& operator=(const CList& rhs);
-			CList& operator=(CList&& rhs);
+			List& operator=(const List& rhs);
+			List& operator=(List&& rhs);
 
-			~CList();
+			template<typename ...Args>
+			void emplace(Args&&... args);
 
-			void Insert(const T& t);
-			void Remove(const T& t);
+			void insert(const T& t);
+			void insert(T&& t);
+
+			void remove(const T& t);
+			void clear();
+
+			std::size_t getSize() const { return mSize; }
 
 		private:
-			CNode * m_pHead;
-
+			Node* mHead = nullptr;
+			std::size_t mSize = 0;
 		};
-
-		//  default constructor
-		template <typename T>
-		CList<T>::CList()
-			: m_pHead(nullptr)
-		{
-
-		}
 
 		//  custom constructor - create a list of N size
 		template <typename T>
-		CList<T>::CList(const int iSize)
-			: m_pHead(nullptr)
+		List<T>::List(const std::size_t size)
 		{
+			//  empty list?
+			if (size == 0) return;
+
+			//  create head
+			mHead = new Node{};
+
 			//  create a temporary pointer to the head of the list
-			CNode* pNode = nullptr;
-			for (int i = 0; i < iSize; ++i) {
-				if (pNode) {
-					//  this is a valid node
-					//  create a new node
-					CNode* pNext = new CNode;
+			Node* node = mHead;
+			for (int i = 0; i < size - 1; ++i) {
+				//  this is a valid node
+				//  create a new node
+				//  link it to the list
+				node->mNext = new Node{};
 
-					//  link it to the list
-					pNode->SetNext(pNext);
-
-					//  iterate to the next node
-					pNode = pNext;
-				}
-				else {
-					//  at the start of the list
-					pNode = new CNode;
-
-					//  store the head of the list
-					m_pHead = pNode;
-				}
+				//  iterate to the next node
+				node = node->mNext;
 			}
+
+			mSize = size;
 		}
 
 		//  custom constructor - create a list populated with data
 		template <typename T>
-		CList<T>::CList(const std::initializer_list<T>& il)
-			: m_pHead(nullptr)
+		List<T>::List(const std::initializer_list<T>& il)
 		{
+			//  empty list?
+			if (il.size() == 0) return;
+
+			//  get first element in list and make the head node
+			auto it = il.begin();
+			mHead = new Node{ (*it), nullptr };
+			++it;
+
 			//  create a temporary pointer to the head of the list
-			CNode* pNode = m_pHead;
-			for (const auto& data : il) {
-				if (pNode) {
-					//  this is a valid node
-					//  create a new node
-					CNode* pNext = new CNode(data);
-
-					//  link it to the list
-					pNode->SetNext(pNext);
-
-					//  iterate to the next node
-					pNode = pNext;
-				}
-				else {
-					//  at start of list
-					pNode = new CNode(data);
-
-					//  store the head of the list
-					m_pHead = pNode;
-				}
-			}
-		}
-
-		template <typename T>
-		CList<T>::CList(const CList<T>& rhs)
-		{
-			CNode* pLhsNode = nullptr;
-			CNode* pRhsNode = rhs.m_pHead;
-			while (pRhsNode) {
-				if (pLhsNode) {
-					//  create a copy of the rhs node
-					CNode* temp = new CNode(pRhsNode->GetData());
-
-					//  link it to lhs list
-					pLhsNode->SetNext(temp);
-
-					//  iterate to next lhs node
-					pLhsNode = temp;
-				}
-				else {
-					pLhsNode = new CNode(pRhsNode->GetData());
-				}
-
-				//  iterate to next rhs node
-				pRhsNode = pRhsNode->GetNext();
-			}
-		}
-
-		template <typename T>
-		CList<T>::CList(CList<T>&& rhs)
-		{
-			//  take ownership of the rhs head pointer
-			m_pHead = std::move(rhs.m_pHead);
-
-			//  make sure rhs points to null as it no longer owns the list that rhs.m_pHead use to point to
-			rhs.m_pHead = nullptr;
-		}
-
-		template <typename T>
-		CList<T>& CList<T>::operator=(const CList<T>& rhs)
-		{
-			//  copy
-			CList<T> rhsCopy(rhs);
-
-			//  swap
-			std::swap(m_pHead, rhs.m_pHead);
-
-			return this;
-		}
-
-		template <typename T>
-		CList<T>& CList<T>::operator=(CList<T>&& rhs)
-		{
-			//  check for self move
-			if (this == &rhs) return *this;
-
-			//  free lhs list resources
-			CNode* pNode = m_pHead;
-			while (pNode) {
-				//  keep a record of the next node in the list
-				CNode* pNext = pNode->GetNext();
-
-				//  delete current node
-				delete pNode;
+			Node* node = mHead;
+			for (; it != il.end(); ++it) {
+				//  this is a valid node
+				//  create a new node
+				//  link it to the list
+				node->mNext = new Node{ (*it), nullptr };
 
 				//  iterate to the next node
-				pNode = pNext;
+				node = node->mNext;
 			}
 
-			//  take ownership of the internals of rhs
-			m_pHead = std::move(rhs.m_pHead);
-
-			//  make sure rhs does not point to same list as lhs
-			rhs.m_pHead = nullptr;
+			mSize = il.size();
 		}
 
 		template <typename T>
-		CList<T>::~CList()
+		List<T>::List(const List<T>& rhs)
 		{
-			CNode* pNode = m_pHead;
-			while (pNode) {
-				//  store the pointer to the next node
-				CNode* pNext = pNode->GetNext();
+			Node* lhsNode = nullptr;
+			Node* rhsNode = rhs.mHead;
 
-				//  delete current node
-				delete pNode;
+			//  create the head node
+			if (rhsNode) {								
+				lhsNode = new Node{ rhsNode->mData, nullptr };
+				mHead = lhsNode;
 
-				//  iterate to next node
-				pNode = pNext;
+				//  iterate to next rhs node
+				rhsNode = rhsNode->mNext;
 			}
 
-			m_pHead = nullptr;
+			//  create rest of list
+			while (rhsNode && lhsNode) {
+
+				//  create a copy of the rhs node
+				//  link it to lhs list
+				lhsNode->mNext = new Node{ rhsNode->mData, nullptr };
+
+				//  iterate to next lhs node
+				lhsNode = lhsNode->mNext;
+
+				//  iterate to next rhs node
+				rhsNode = rhsNode->mNext;
+			}
+
+			mSize = rhs.mSize;
 		}
 
 		template <typename T>
-		void CList<T>::Insert(const T& t)
+		List<T>::List(List<T>&& rhs) noexcept
 		{
-			CNode* pNode = m_pHead;
-			CNode* pLastNode = nullptr;
+			using std::swap;
+			swap(*this, rhs);
+		}
 
-			while (pNode) {
-				pLastNode = pNode;
-				pNode = pNode->GetNext();
+		template <typename T>
+		List<T>::~List()
+		{
+			try {
+				clear();
+			} catch (...) {
+				//  T's destructor could throw during the delete call
+				//  do not allow any exceptions to propogate from a destructor
+				//  TODO: but there could be leaked memory here
+				//  maybe just wrap the "delete node" in a try/catch(...)?
+			}
+		}
+
+		template <typename T>
+		List<T>& List<T>::operator=(const List<T>& rhs)
+		{
+			//  check for self assignment
+			if (this != &rhs) {
+
+				//  make a copy of rhs
+				List<T> rhsCopy(rhs);
+
+				//  swap
+				using std::swap;
+				swap(*this, rhsCopy);
 			}
 
-			if (pLastNode) {
+			return *this;
+		}
+
+		template <typename T>
+		List<T>& List<T>::operator=(List<T>&& rhs)
+		{
+			//  check for self move
+			if (this != &rhs) {
+				
+				//  swap
+				using std::swap;
+				swap(*this, rhs);
+			}
+
+			return *this;
+		}
+
+		template<typename T>
+		template<typename ...Args>
+		void List<T>::emplace(Args&&... args)
+		{
+			//  forward to the relevant insert
+			insert(std::forward<Args>(args)...);
+		}
+
+		template <typename T>
+		void List<T>::insert(const T& t)
+		{
+			Node* tail = mHead;
+
+			//  find the tail of the list
+			while (tail && tail->mNext) {
+				tail = tail->mNext;
+			}
+
+			if (tail) {
 				//  list has a tail
-				//  create a node
-				CNode* pTemp = new CNode(t);
-
 				//  append this node to the end of the list
-				pLastNode->SetNext(pTemp);
-			}
-			else {
+				tail->mNext = new Node{ t, nullptr };
+			} else {
 				//  empty list
 				//  append to head
-				m_pHead = new CNode(t);
+				mHead = new Node{ t, nullptr };
 			}
+
+			++mSize;
 		}
 
 		template <typename T>
-		void CList<T>::Remove(const T& t)
+		void List<T>::insert(T&& t)
 		{
-			CNode* pLastNode = nullptr;
-			CNode* pNode = m_pHead;
+			Node* tail = mHead;
 
-			while (pNode) {
-				if (pNode->GetData() == t) {
-					//  found this data in the list
+			//  find the tail of the list
+			while (tail && tail->mNext) {
+				tail = tail->mNext;
+			}
 
-					if (pLastNode) {
-						//  unlink the current node and link to the one after it
-						pLastNode->SetNext(pNode->GetNext());
+			if (tail) {
+				//  list has a tail
+				//  append this node to the end of the list
+				tail->mNext = new Node{ std::move(t), nullptr };
+			} else {
+				//  empty list
+				//  append to head
+				mHead = new Node{ std::move(t), nullptr };
+			}
 
-						delete pNode;
+			++mSize;
+		}
 
-						//  iterate to next node
-						pNode = pLastNode->GetNext();
+		template <typename T>
+		void List<T>::remove(const T& t)
+		{
+			Node* node = mHead;
+			Node* prev = nullptr;
 
-						//  last node will stay the same as we deleted an item
+			while (node) {
+				//  found?
+				if (node->mData == t) {
+					if (prev) {
+						//  unlink from list
+						prev->mNext = node->mNext;
+						delete node;
+						--mSize;
+					} else {
+						//  remove head
+						delete node;
+						mHead = nullptr;
+						--mSize;
 					}
-					else {
-						//  item to be removed is at head of list
-
-						//  create a copy of next
-						CNode* pNext = pNode->GetNext();
-
-						//  change the head pointer to point to the next node
-						m_pHead = pNext;
-
-						//  delete the current node
-						delete pNode;
-
-						//  iterate to the next node
-						pNode = pNext;
-					}
-				}
-				else {
+				} else {
 					//  data not found
-
-					//  keep a record of the last node
-					pLastNode = pNode;
-
 					//  iterate to next node
-					pNode = pNode->GetNext();
+					prev = node;
+					node = node->mNext;
 				}
 			}
+		}
+
+		template<typename T>
+		void List<T>::clear()
+		{
+			Node* node = mHead;
+			while (node) {
+				//  store the pointer to the next node
+				Node* next = node->mNext;
+
+				//  delete current node
+				delete node;
+
+				//  iterate to next node
+				node = next;
+			}
+
+			mHead = nullptr;
+			mSize = 0;
 		}
 	}
 }

@@ -28,7 +28,7 @@ namespace utils {
 			Queue() = default;
 			Queue(const Queue<T>& rhs);
 			Queue(Queue<T>&& rhs) noexcept;
-			~Queue() noexcept;
+			~Queue();
 
 			Queue<T>& operator=(const Queue<T>& rhs);
 			Queue<T>& operator=(Queue<T>&& rhs) noexcept;
@@ -75,7 +75,7 @@ namespace utils {
 		}
 
 		template<typename T>
-		Queue<T>::~Queue() noexcept
+		Queue<T>::~Queue()
 		{
 			try {
 				clear();
