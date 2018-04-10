@@ -212,7 +212,7 @@ before_install:
 before_script:
   - if [ -n "${LIBCXX_BUILD}" ]; then
       source .travis-libcxx-setup.sh;
-fi
+    fi
     
 language:
   - cpp
