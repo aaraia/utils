@@ -174,7 +174,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
         - LIBCXX_BUILD=1
-        - CPPFLAGS="-stdlib=libc++"
+        - EXTRA_FLAGS="-stdlib=libc++"
       script:
         - cmake . -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}"
         - make
